@@ -1,1 +1,185 @@
-/* Add your styles here */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    /* Color de acento de toda la app: botón primario, focos, enlaces...
+       Un valor para claro y otro para oscuro. */
+    --aura-accent-color-light: #4f46e5; /* índigo */
+    --aura-accent-color-dark: #a5b4fc;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   2. LA PÁGINA
+   La vista Calculadora es un VerticalLayout y lleva la clase
+   .pagina-calculadora. Aquí se pinta el fondo con dos halos de color
+   hechos con degradados radiales y el color de fondo del tema.
+   -------------------------------------------------------------------------- */
+.pagina-calculadora {
+    min-height: 100dvh;
+    padding: 1.5rem;
+    background:
+        radial-gradient(circle at 15% 15%,
+            color-mix(in srgb, var(--aura-accent-color) 18%, transparent),
+            transparent 55%),
+        radial-gradient(circle at 85% 85%,
+            color-mix(in srgb, var(--aura-accent-color) 12%, transparent),
+            transparent 50%),
+        var(--aura-background-color);
+}
+
+/* --------------------------------------------------------------------------
+   3. LA TARJETA ("card")
+   Un layout anidado con fondo, borde suave, esquinas redondeadas y sombra.
+   gap separa a sus hijos sin tener que añadir márgenes uno a uno.
+   -------------------------------------------------------------------------- */
+.tarjeta-calculadora {
+    width: 100%;
+    max-width: 420px;
+    padding: 1.75rem;
+    gap: 1rem;
+    background: var(--vaadin-background-container); /* superficie del tema */
+    border: 1px solid var(--vaadin-border-color-secondary);
+    border-radius: 24px;
+    box-shadow: 0 24px 60px -28px rgba(15, 23, 42, 0.5);
+    animation: aparecer 0.45s ease-out both;
+}
+
+/* Pequeña animación de entrada (opcional, pero queda bonito) */
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   4. TEXTOS
+   -------------------------------------------------------------------------- */
+.titulo-calculadora {
+    margin: 0;
+    font-size: clamp(1.7rem, 6vw, 2.1rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--aura-accent-text-color); /* acento con contraste correcto */
+}
+
+.subtitulo-calculadora {
+    margin: -0.5rem 0 0.25rem;
+    font-size: 0.95rem;
+    color: var(--vaadin-text-color-secondary);
+}
+
+.pie-calculadora {
+    margin: 0.25rem 0 0;
+    font-size: 0.75rem;
+    text-align: center;
+    color: var(--vaadin-text-color-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   5. CAMPOS
+   Los TextField son web components con shadow DOM: la clase en el elemento
+   <vaadin-text-field> sí funciona, pero para lo de dentro hay que usar
+   ::part(nombre). Partes habituales: input-field, input, label, ...
+   -------------------------------------------------------------------------- */
+.fila-campos {
+    flex-wrap: wrap; /* en pantallas estrechas los campos bajan de línea */
+    gap: 0.75rem;
+}
+
+.campo-numero {
+    flex: 1 1 130px;
+    min-width: 0;
+}
+
+.campo-numero::part(label) {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.campo-numero::part(input-field) {
+    border-radius: 12px;
+    background: var(--aura-background-color);
+}
+
+/* El resultado se ve grande y alineado a la derecha, como una pantalla. */
+.resultado-calculadora::part(input-field) {
+    background: var(--aura-accent-surface);
+    border-color: var(--aura-accent-border-color);
+}
+
+.resultado-calculadora::part(input) {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: right;
+}
+
+/* --------------------------------------------------------------------------
+   6. BOTONES
+   El Div con clase .rejilla-botones se convierte en un CSS Grid 2x2.
+   Ventaja: en Java solo se añaden botones; la colocación es cosa del CSS.
+   -------------------------------------------------------------------------- */
+.rejilla-botones {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.rejilla-botones vaadin-button {
+    width: 100%;
+    font-weight: 600;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* transform en el host del componente: el botón entero "flota" al pasar. */
+.rejilla-botones vaadin-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -14px rgba(15, 23, 42, 0.65);
+}
+
+/* "Limpiar" ocupa las dos columnas de la rejilla */
+.boton-limpiar {
+    grid-column: 1 / -1;
+}
+
+/* --------------------------------------------------------------------------
+   7. RESPONSIVE Y ACCESIBILIDAD
+   -------------------------------------------------------------------------- */
+@media (max-width: 420px) {
+    .pagina-calculadora {
+        padding: 1rem;
+    }
+
+    .tarjeta-calculadora {
+        padding: 1.25rem;
+        border-radius: 18px;
+    }
+}
+
+/* Si el usuario pide menos movimiento en su sistema, se respeta. */
+@media (prefers-reduced-motion: reduce) {
+    .tarjeta-calculadora {
+        animation: none;
+    }
+
+    .rejilla-botones vaadin-button {
+        transition: none;
+    }
+
+    .rejilla-botones vaadin-button:hover {
+        transform: none;
+    }
+}
