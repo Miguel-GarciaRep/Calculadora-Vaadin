@@ -16,6 +16,17 @@ import com.vaadin.flow.router.Route;
 
 import java.util.function.BiFunction;
 
+/**
+ * Vista principal de la calculadora.
+ *
+ * Conceptos de POO que se aplican en esta clase:
+ *  - HERENCIA:       extends VerticalLayout (hereda add(), setSizeFull(), etc.).
+ *  - ABSTRACCIÓN:    implements Sumar, Restar, Multiplicar, Dividir (contratos).
+ *  - POLIMORFISMO:   cada interfaz se cumple con @Override, y calcular() recibe
+ *                    cualquier operación como BiFunction (this::sumar, this::restar...).
+ *  - ENCAPSULAMIENTO: aNumero(), formatear(), calcular() y mostrarError()
+ *                    son private: el resto del programa no los ve.
+ */
 @PageTitle("Calculadora · Vaadin")
 @Route("/")
 public class Calculadora extends VerticalLayout implements Sumar, Restar, Multiplicar, Dividir {
@@ -94,6 +105,9 @@ public class Calculadora extends VerticalLayout implements Sumar, Restar, Multip
         dividir.addClickListener(event -> calcular(num1, num2, resultado, this::dividir));
     }
 
+    // POLIMORFISMO: "operacion" puede ser sumar, restar, multiplicar o dividir;
+    // este método no necesita saber cuál es, solo la ejecuta.
+    // ENCAPSULAMIENTO: es private, solo se usa dentro de esta clase.
     private void calcular(TextField num1, TextField num2, TextField resultado,
                           BiFunction<TextField, TextField, String> operacion) {
         try {
@@ -113,6 +127,7 @@ public class Calculadora extends VerticalLayout implements Sumar, Restar, Multip
         Notification.show(mensaje, 2500, Notification.Position.BOTTOM_CENTER);
     }
 
+    // ENCAPSULAMIENTO: detalle interno (convierte "3,5" en 3.5) oculto al exterior.
     private double aNumero(TextField campo) {
         return Double.parseDouble(campo.getValue().replace(",", "."));
     }
@@ -124,6 +139,7 @@ public class Calculadora extends VerticalLayout implements Sumar, Restar, Multip
         return String.valueOf(valor);
     }
 
+    // POLIMORFISMO (sobrescritura): implementación concreta del contrato Sumar.
     @Override
     public String sumar(TextField num1, TextField num2) {
         return formatear(aNumero(num1) + aNumero(num2));

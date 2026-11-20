@@ -5,10 +5,24 @@
 }
 
 html {
-    /* Color de acento de toda la app: botón primario, focos, enlaces...
+
+    --velina-azul-noche: #0f1530;   /* fondo más oscuro (corsé / sombras)   */
+    --velina-azul-vestido: #1e2f6b; /* azul del vestido                     */
+    --velina-azul-medio: #2f4ba2;   /* azul vivo (botones, bordes)          */
+    --velina-violeta: #7c5cd6;      /* ojos violeta                         */
+    --velina-lavanda: #c9bdf2;      /* cabello plateado-lavanda             */
+    --velina-plata: #dfe2ee;        /* plata / medias y zapatos             */
+    --velina-blanco: #f7f6ff;       /* cuello y lazo blancos                */
+    --velina-dorado: #d9b45b;       /* adornos y joyas doradas              */
+
+    /* Color de acento de toda la app (botón primario, focos, enlaces...).
        Un valor para claro y otro para oscuro. */
-    --aura-accent-color-light: #4f46e5; /* índigo */
-    --aura-accent-color-dark: #a5b4fc;
+    --aura-accent-color-light: #2f4ba2;
+    --aura-accent-color-dark: #c9bdf2;
+
+    /* La paleta es oscura (como el vestido de Velina): se fuerza el modo
+       oscuro para que los colores se vean igual en cualquier equipo. */
+    color-scheme: dark;
 }
 
 body {
@@ -27,12 +41,12 @@ body {
     padding: 1.5rem;
     background:
         radial-gradient(circle at 15% 15%,
-            color-mix(in srgb, var(--aura-accent-color) 18%, transparent),
+            color-mix(in srgb, var(--velina-violeta) 35%, transparent),
             transparent 55%),
         radial-gradient(circle at 85% 85%,
-            color-mix(in srgb, var(--aura-accent-color) 12%, transparent),
+            color-mix(in srgb, var(--velina-azul-medio) 40%, transparent),
             transparent 50%),
-        var(--aura-background-color);
+        linear-gradient(160deg, var(--velina-azul-noche), var(--velina-azul-vestido));
 }
 
 /* --------------------------------------------------------------------------
@@ -45,10 +59,11 @@ body {
     max-width: 420px;
     padding: 1.75rem;
     gap: 1rem;
-    background: var(--vaadin-background-container); /* superficie del tema */
-    border: 1px solid var(--vaadin-border-color-secondary);
+    background: color-mix(in srgb, var(--velina-azul-noche) 88%, transparent);
+    border: 1px solid var(--velina-dorado); /* borde dorado, como sus joyas */
     border-radius: 24px;
-    box-shadow: 0 24px 60px -28px rgba(15, 23, 42, 0.5);
+    box-shadow: 0 24px 60px -28px rgba(0, 0, 0, 0.8),
+                0 0 0 4px color-mix(in srgb, var(--velina-dorado) 12%, transparent);
     animation: aparecer 0.45s ease-out both;
 }
 
@@ -72,20 +87,20 @@ body {
     font-size: clamp(1.7rem, 6vw, 2.1rem);
     font-weight: 800;
     letter-spacing: -0.02em;
-    color: var(--aura-accent-text-color); /* acento con contraste correcto */
+    color: var(--velina-lavanda); /* cabello plateado-lavanda */
 }
 
 .subtitulo-calculadora {
     margin: -0.5rem 0 0.25rem;
     font-size: 0.95rem;
-    color: var(--vaadin-text-color-secondary);
+    color: var(--velina-plata);
 }
 
 .pie-calculadora {
     margin: 0.25rem 0 0;
     font-size: 0.75rem;
     text-align: center;
-    color: var(--vaadin-text-color-secondary);
+    color: var(--velina-dorado);
 }
 
 /* --------------------------------------------------------------------------
@@ -104,20 +119,32 @@ body {
     min-width: 0;
 }
 
-.campo-numero::part(label) {
+.campo-numero::part(label),
+.resultado-calculadora::part(label) {
     font-size: 0.8rem;
     font-weight: 600;
+    color: var(--velina-lavanda);
 }
 
 .campo-numero::part(input-field) {
     border-radius: 12px;
-    background: var(--aura-background-color);
+    background: var(--velina-azul-vestido);
+    border: 1px solid var(--velina-azul-medio);
+}
+
+.campo-numero::part(input),
+.resultado-calculadora::part(input) {
+    color: var(--velina-blanco);
+}
+
+.campo-numero::part(helper-text) {
+    color: var(--velina-plata);
 }
 
 /* El resultado se ve grande y alineado a la derecha, como una pantalla. */
 .resultado-calculadora::part(input-field) {
-    background: var(--aura-accent-surface);
-    border-color: var(--aura-accent-border-color);
+    background: color-mix(in srgb, var(--velina-violeta) 28%, var(--velina-azul-noche));
+    border: 1px solid var(--velina-dorado);
 }
 
 .resultado-calculadora::part(input) {
@@ -141,18 +168,33 @@ body {
 .rejilla-botones vaadin-button {
     width: 100%;
     font-weight: 600;
+    color: var(--velina-blanco);
+    --vaadin-button-background: var(--velina-azul-medio);
+    background: var(--velina-azul-medio);
+    border: 1px solid var(--velina-lavanda);
     transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Botón primario ("Sumar"): degradado violeta -> azul, texto blanco */
+.rejilla-botones vaadin-button[theme~="primary"] {
+    --vaadin-button-background: var(--velina-violeta);
+    background: linear-gradient(135deg, var(--velina-violeta), var(--velina-azul-medio));
+    border-color: var(--velina-dorado);
 }
 
 /* transform en el host del componente: el botón entero "flota" al pasar. */
 .rejilla-botones vaadin-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 24px -14px rgba(15, 23, 42, 0.65);
+    box-shadow: 0 12px 24px -14px var(--velina-violeta);
 }
 
 /* "Limpiar" ocupa las dos columnas de la rejilla */
 .boton-limpiar {
     grid-column: 1 / -1;
+    --vaadin-button-background: transparent;
+    background: transparent !important;
+    color: var(--velina-dorado) !important;
+    border: 1px solid var(--velina-dorado) !important;
 }
 
 /* --------------------------------------------------------------------------
